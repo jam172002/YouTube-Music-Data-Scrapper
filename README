@@ -1,0 +1,45 @@
+# YouTube Music Chart Scraper
+
+## Description:
+This application allows you to scrape the **YouTube music charts** for various countries and save the data in `.txt` files. The tool provides an easy-to-use graphical interface to select countries and view music charts with **artist names**, **song titles**, and **weekly views**. It also includes a feature to **view** previously saved `.txt` files directly within the app or in the system's default text editor.
+
+## Features:
+- **Select Countries**: Choose the countries you want to scrape music charts for.
+- **Add Custom Countries**: Add new countries to scrape by entering their country code (e.g., 'fr' for France).
+- **Scrape Music Data**: Once countries are selected, scrape the music chart data and save it into individual `.txt` files.
+- **View `.txt` Files**: Automatically load available `.txt` files on app startup. Double-click to open a file in the default text editor.
+- **Exit Option**: Close the application using the **Exit** button.
+
+## Requirements:
+- **Windows Operating System** (app is built for Windows).
+- **No Python or external dependencies needed** (the app is packaged as a standalone executable `.exe`).
+
+## How to Use:
+1. **Run the Application**:
+   - Double-click on the `song_scraper.exe` file to launch the application.
+
+2. **Select Countries**:
+   - By default, countries like **Germany**, **Austria**, **United States**, and **United Kingdom** are pre-selected.
+   - You can add more countries by clicking the **Add Country** button. Enter the country code (e.g., 'fr' for France) and press **OK**.
+   - You can also check/uncheck the countries you want to scrape.
+
+3. **Scrape Data**:
+   - After selecting the countries, click the **Run Scraper** button. The application will fetch the music charts for the selected countries and save the data into `.txt` files (e.g., `de_music_chart.txt` for Germany).
+
+4. **View Files**:
+   - The **left side** of the application displays a list of available `.txt` files. When the application starts, it will automatically load any existing `.txt` files in the directory.
+   - You can double-click any file in the list to open it in **Notepad** (or your system's default text editor).
+
+5. **Exit the Application**:
+   - Once you are done, click the **Exit** button to close the application.
+
+## Notes:
+- The tool scrapes **weekly views** and **song data** from YouTube music charts.
+- The application uses an internet connection to fetch the data, so please ensure that you are connected to the internet.
+
+## Troubleshooting:
+- If the application does not work as expected, make sure that you are connected to the internet and that no firewall or antivirus is blocking the application from accessing the YouTube charts page.
+- If you want to add additional countries, make sure to input the correct country code when prompted (e.g., 'fr' for France, 'es' for Spain).
+
+## Contact:
+For any issues or questions, please contact us at [Your Contact Information].

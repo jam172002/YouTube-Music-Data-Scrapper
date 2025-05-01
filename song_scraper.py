@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog, filedialog
+from tkinter import messagebox, simpledialog
 import os
 import subprocess
 from selenium import webdriver
@@ -126,26 +126,28 @@ def load_files():
     txt_files = [f for f in os.listdir() if f.endswith(".txt")]
     
     if txt_files:
-        # Create a listbox with available files
+        # Clear existing listbox entries
+        file_listbox.delete(0, tk.END)
+        
+        # Insert files into the listbox
         for file in txt_files:
-            file_button = tk.Button(file_list_frame, text=file, command=lambda f=file: open_file(f), fg="#2C3E50", bg="#E67E22", font=("Helvetica", 10), relief="flat", width=20, height=2)
-            file_button.pack(pady=5)
+            file_listbox.insert(tk.END, file)
     else:
         messagebox.showinfo("No Files", "No .txt files found in the directory.")
 
 # GUI setup
 root = tk.Tk()
 root.title("YouTube Music Chart Scraper")
-root.geometry("600x500")  # Set window size
+root.geometry("800x500")  # Set window size
 root.config(bg="#2C3E50")  # Set background color
 
 # Title label
 label = tk.Label(root, text="Select countries to scrape music charts from:", fg="#ECF0F1", bg="#2C3E50", font=("Helvetica", 12))
 label.pack(pady=20)
 
-# Frame for checkboxes
+# Frame for checkboxes (Country Selection)
 checkbox_frame = tk.Frame(root, bg="#2C3E50")
-checkbox_frame.pack(pady=10)
+checkbox_frame.pack(side="right", padx=20, pady=10, fill="y")
 
 # Countries and corresponding checkboxes
 country_vars = {
@@ -158,9 +160,17 @@ country_vars = {
 # Create checkboxes for the pre-selected countries
 update_country_checkboxes()
 
-# Frame for file list (button-based)
+# Frame for file list (file view)
 file_list_frame = tk.Frame(root, bg="#2C3E50")
-file_list_frame.pack(pady=20)
+file_list_frame.pack(side="left", padx=20, pady=10, fill="y")
+
+# Listbox to show .txt files
+file_listbox = tk.Listbox(file_list_frame, bg="#34495E", fg="#ECF0F1", font=("Helvetica", 10), height=10, width=30)
+file_listbox.pack(pady=10)
+
+# Load files button
+load_button = tk.Button(root, text="Load .txt Files", command=load_files, fg="#2C3E50", bg="#E74C3C", font=("Helvetica", 12), relief="flat", width=20, height=2)
+load_button.pack(pady=10)
 
 # Button to add new countries
 add_button = tk.Button(root, text="Add Country", command=add_country, fg="#2C3E50", bg="#E67E22", font=("Helvetica", 12), relief="flat", width=20, height=2)
@@ -170,13 +180,15 @@ add_button.pack(pady=10)
 run_button = tk.Button(root, text="Run Scraper", command=run_scraper, fg="#2C3E50", bg="#3498DB", font=("Helvetica", 12), relief="flat", width=20, height=2)
 run_button.pack(pady=10)
 
-# Load files button
-load_button = tk.Button(root, text="Load and Open .txt Files", command=load_files, fg="#2C3E50", bg="#E74C3C", font=("Helvetica", 12), relief="flat", width=20, height=2)
-load_button.pack(pady=10)
-
 # Exit button
 exit_button = tk.Button(root, text="Exit", command=root.quit, fg="#2C3E50", bg="#E74C3C", font=("Helvetica", 12), relief="flat", width=20, height=2)
 exit_button.pack(pady=20)
+
+# Bind a click event on the listbox to open the selected file
+file_listbox.bind("<Double-1>", lambda event: open_file(file_listbox.get(file_listbox.curselection())))
+
+# Load available .txt files when the app starts
+load_files()
 
 # Start the GUI event loop
 root.mainloop()
