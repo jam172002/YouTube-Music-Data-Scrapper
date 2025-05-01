@@ -1,6 +1,8 @@
+import tkinter as tk
+from tkinter import messagebox
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service  # Import the Service class
-from selenium.webdriver.chrome.options import Options  # Optional if you need headless mode
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import time
 
@@ -57,20 +59,58 @@ def scrape_youtube_chart(country_code):
 
     return chart_data
 
-# List of countries to scrape
-countries = ['de', 'at', 'us', 'uk']  # Example: Germany, Austria, US, UK
+# Function that triggers the scraping based on selected countries
+def run_scraper():
+    # Get the selected countries
+    selected_countries = [country for country, var in country_vars.items() if var.get()]
 
-# Scrape data for each country and save it to a separate text file
-for country_code in countries:
-    chart_data = scrape_youtube_chart(country_code)
-    
-    # Create a filename based on the country code
-    file_name = f"{country_code}_music_chart.txt"
-    
-    # Write the scraped data to a separate .txt file for each country
-    with open(file_name, "w", encoding="utf-8") as file:
-        for line in chart_data:
-            file.write(line + "\n")
-    
-    # Print a success message for each country
-    print(f"Data for {country_code} has been written to '{file_name}'.")
+    if not selected_countries:
+        messagebox.showerror("Error", "Please select at least one country.")
+        return
+
+    # Scrape data for each selected country and save it to a separate text file
+    for country_code in selected_countries:
+        chart_data = scrape_youtube_chart(country_code)
+        
+        # Create a filename based on the country code
+        file_name = f"{country_code}_music_chart.txt"
+        
+        # Write the scraped data to a separate .txt file for each country
+        with open(file_name, "w", encoding="utf-8") as file:
+            for line in chart_data:
+                file.write(line + "\n")
+        
+        # Show success message for each country
+        messagebox.showinfo("Success", f"Data for {country_code} has been written to '{file_name}'.")
+
+# GUI setup
+root = tk.Tk()
+root.title("YouTube Music Chart Scraper")
+root.geometry("500x350")  # Set window size
+root.config(bg="#2C3E50")  # Set background color
+
+# Title label
+label = tk.Label(root, text="Select countries to scrape music charts from:", fg="#ECF0F1", bg="#2C3E50", font=("Helvetica", 12))
+label.pack(pady=20)
+
+# Countries and corresponding checkboxes
+country_vars = {
+    "Germany": tk.BooleanVar(value=True),
+    "Austria": tk.BooleanVar(value=True),
+    "US": tk.BooleanVar(value=True),
+    "UK": tk.BooleanVar(value=True),
+    # Add more countries as needed
+}
+
+# Create checkboxes for each country
+for country, var in country_vars.items():
+    checkbox = tk.Checkbutton(root, text=country, variable=var, fg="#ECF0F1", bg="#2C3E50", font=("Helvetica", 10), selectcolor="#34495E")
+    checkbox.pack(anchor='w', padx=20)
+
+# Run button
+run_button = tk.Button(root, text="Run Scraper", command=run_scraper, fg="#2C3E50", bg="#3498DB", font=("Helvetica", 12), relief="flat", width=20, height=2)
+run_button.pack(pady=20)
+
+# Start the GUI event loop
+root.mainloop()
+# Note: Make sure to have the required libraries installed (selenium, beautifulsoup4, tkinter).
