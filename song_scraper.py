@@ -1,5 +1,7 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog
+from tkinter import messagebox, simpledialog, filedialog
+import os
+import subprocess
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service  # Import the Service class
 from selenium.webdriver.chrome.options import Options  # Optional if you need headless mode
@@ -107,10 +109,34 @@ def run_scraper():
         # Show success message for each country
         messagebox.showinfo("Success", f"Data for {country_code} has been written to '{file_name}'.")
 
+# Function to open the selected text file in the system default text editor
+def open_file(file_name):
+    try:
+        # Check if file exists before trying to open
+        if os.path.exists(file_name):
+            subprocess.run(["notepad.exe", file_name])  # Opens the file in the default text editor (Notepad)
+        else:
+            messagebox.showerror("Error", f"File '{file_name}' does not exist.")
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to open the file. Error: {str(e)}")
+
+# Function to load and display available text files
+def load_files():
+    # List all .txt files in the current directory
+    txt_files = [f for f in os.listdir() if f.endswith(".txt")]
+    
+    if txt_files:
+        # Create a listbox with available files
+        for file in txt_files:
+            file_button = tk.Button(file_list_frame, text=file, command=lambda f=file: open_file(f), fg="#2C3E50", bg="#E67E22", font=("Helvetica", 10), relief="flat", width=20, height=2)
+            file_button.pack(pady=5)
+    else:
+        messagebox.showinfo("No Files", "No .txt files found in the directory.")
+
 # GUI setup
 root = tk.Tk()
 root.title("YouTube Music Chart Scraper")
-root.geometry("500x400")  # Set window size
+root.geometry("600x500")  # Set window size
 root.config(bg="#2C3E50")  # Set background color
 
 # Title label
@@ -132,13 +158,21 @@ country_vars = {
 # Create checkboxes for the pre-selected countries
 update_country_checkboxes()
 
+# Frame for file list (button-based)
+file_list_frame = tk.Frame(root, bg="#2C3E50")
+file_list_frame.pack(pady=20)
+
 # Button to add new countries
 add_button = tk.Button(root, text="Add Country", command=add_country, fg="#2C3E50", bg="#E67E22", font=("Helvetica", 12), relief="flat", width=20, height=2)
-add_button.pack(pady=20)
+add_button.pack(pady=10)
 
 # Run button
 run_button = tk.Button(root, text="Run Scraper", command=run_scraper, fg="#2C3E50", bg="#3498DB", font=("Helvetica", 12), relief="flat", width=20, height=2)
-run_button.pack(pady=20)
+run_button.pack(pady=10)
+
+# Load files button
+load_button = tk.Button(root, text="Load and Open .txt Files", command=load_files, fg="#2C3E50", bg="#E74C3C", font=("Helvetica", 12), relief="flat", width=20, height=2)
+load_button.pack(pady=10)
 
 # Exit button
 exit_button = tk.Button(root, text="Exit", command=root.quit, fg="#2C3E50", bg="#E74C3C", font=("Helvetica", 12), relief="flat", width=20, height=2)
