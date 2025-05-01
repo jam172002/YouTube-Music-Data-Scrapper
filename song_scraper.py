@@ -32,7 +32,7 @@ def scrape_youtube_chart(country_code):
     chart_items = soup.find_all('ytmc-entry-row')  # The entries are inside 'ytmc-entry-row'
     chart_data = []
 
-    # Iterate through each chart item and extract the artist and song names
+    # Iterate through each chart item and extract the artist, song names, and views
     for idx, item in enumerate(chart_items, start=1):
         try:
             # Extract the song title
@@ -42,7 +42,13 @@ def scrape_youtube_chart(country_code):
             artist_spans = item.find_all('span', class_='artistName')
             artists = " & ".join([artist.text.strip() for artist in artist_spans])
             
-            chart_data.append(f"{idx}. {song} - {artists}")
+            # Extract the weekly views (correct class found in HTML)
+            views = item.find_all('div', class_='metric content center tablet-non-displayed-metric style-scope ytmc-entry-row')
+            
+            # Get the last div in the row which contains the weekly views
+            views_text = views[-1].text.strip() if views else "No views data"
+            
+            chart_data.append(f"{idx}. {song} - {artists} | Weekly Views: {views_text}")
         except AttributeError:
             continue
 
@@ -51,14 +57,20 @@ def scrape_youtube_chart(country_code):
 
     return chart_data
 
-# Example usage: scraping Germany's music chart
-country_code = 'de'  # Germany's country code
-chart_data = scrape_youtube_chart(country_code)
+# List of countries to scrape
+countries = ['de', 'at', 'us', 'uk']  # Example: Germany, Austria, US, UK
 
-# Write the scraped data to a .txt file with UTF-8 encoding
-with open("music_chart.txt", "w", encoding="utf-8") as file:
-    for line in chart_data:
-        file.write(line + "\n")
-
-# Display a success message
-print("Data has been written to 'music_chart.txt'.")
+# Scrape data for each country and save it to a separate text file
+for country_code in countries:
+    chart_data = scrape_youtube_chart(country_code)
+    
+    # Create a filename based on the country code
+    file_name = f"{country_code}_music_chart.txt"
+    
+    # Write the scraped data to a separate .txt file for each country
+    with open(file_name, "w", encoding="utf-8") as file:
+        for line in chart_data:
+            file.write(line + "\n")
+    
+    # Print a success message for each country
+    print(f"Data for {country_code} has been written to '{file_name}'.")
